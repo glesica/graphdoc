@@ -17,10 +17,16 @@ body {
     padding: 0 1.0em;
     max-width: 900px;
 }
+.graphdoc-graph {
+    border: 1px solid #554600;
+    padding-bottom: 1.0em;
+    margin-top: 1.0em;
+}
 .graphdoc-graph-title {
     background: #554600;
     color: #FFF0AA;
     padding: 0.5em;
+    margin-top: 0;
 }
 .graphdoc-graph-desc {
     margin-left: 1.0em;
@@ -28,7 +34,7 @@ body {
 }
 .graphdoc-node {
     border: 1px solid #440026;
-    margin-top: 1.0em;
+    margin: 1.0em 1.0em 0 1.0em;
 }
 .graphdoc-node h3, .graphdoc-node-desc {
     margin-left: 1.0em;
