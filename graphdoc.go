@@ -3,8 +3,8 @@ package main
 import (
     "bufio"
     //"encoding/json"
-    //"flag"
-    "fmt"
+    "flag"
+    //"fmt"
     "log"
     "os"
     //"io/ioutil"
@@ -20,21 +20,26 @@ var propExp = regexp.MustCompile(":: ?Prop ([A-Za-z0-9]+) ?: ?(num|str|any) ?::"
 
 func main() {
     //var outFormat = flag.String("outformat", "html", "Output format")
-    //flag.Parse()
+    outPath := flag.String("outpath", "", "Output path, stdout will be used if omitted.")
+    flag.Parse()
+    inPath := flag.Arg(0)
 
-    //fmt.Println(*outFormat)
-
-    inputFile, err := os.Open("testDoc0.md")
+    inputFile, err := os.Open(inPath)
     if err != nil {
         log.Fatal("Error opening file:", err)
     }
     defer inputFile.Close()
 
-    outputFile, err := os.Create("testDoc0_filtered.md")
-    if err != nil {
-        log.Fatal("Error opening file:", err)
+    var outputFile *os.File
+    if *outPath == "" {
+        outputFile = os.Stdout
+    } else {
+        outputFile, err = os.Create(*outPath)
+        if err != nil {
+            log.Fatal("Error opening file:", err)
+        }
+        defer outputFile.Close()
     }
-    defer outputFile.Close()
 
     scanner := bufio.NewScanner(inputFile)
 
@@ -109,5 +114,5 @@ func main() {
         log.Fatal("Error reading file:", scanner.Err())
     }
 
-    fmt.Print(graphdoc.HTMLDocument(graph))
+    outputFile.WriteString(graphdoc.HTMLDocument(graph))
 }
