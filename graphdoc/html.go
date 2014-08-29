@@ -18,13 +18,13 @@ body {
     max-width: 900px;
 }
 .graphdoc-graph {
-    border: 1px solid #554600;
+    border: 1px solid #587058;
     padding-bottom: 1.0em;
     margin-top: 1.0em;
 }
 .graphdoc-graph-title {
-    background: #554600;
-    color: #FFF0AA;
+    background: #587058;
+    color: #fff;
     padding: 0.5em;
     margin-top: 0;
 }
@@ -33,7 +33,7 @@ body {
     margin-right: 1.0em;
 }
 .graphdoc-node {
-    border: 1px solid #440026;
+    border: 1px solid #FFD800;
     margin: 1.0em 1.0em 0 1.0em;
 }
 .graphdoc-node h3, .graphdoc-node-desc {
@@ -41,20 +41,26 @@ body {
     margin-right: 1.0em;
 }
 .graphdoc-node-label {
-    color: #CD88AF;
+    background: #FFD800;
+    color: #fff;
     padding: 0.5em;
-    background: #440026;
     margin-top: 0;
 }
 .graphdoc-rel, .graphdoc-prop {
-    border: 1px solid #236467;
+    border: 1px solid #587498;
     margin: 0 1.0em 1.0em 1.0em;
 }
+.graphdoc-prop {
+    border: 1px solid #E86850;
+}
 .graphdoc-rel-label, .graphdoc-prop-name {
-    color: #67989A;
+    color: #fff;
     margin: 0;
-    background: #003133;
+    background: #587498;
     padding: 0.5em;
+}
+.graphdoc-prop-name {
+    background: #E86850;
 }
 .graphdoc-rel-desc, .graphdoc-prop-desc {
     padding: 0.5em;
