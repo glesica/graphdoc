@@ -25,7 +25,8 @@ func (r Rel) ToString() string {
 }
 
 func (self Rel) ToDOT() string {
-    out := fmt.Sprintf("  %s -> %s [label=%s];\n", self.Source, self.Target, self.Label)
+    target := fmt.Sprintf("%s%s", self.Target, self.Label)
+    out := fmt.Sprintf("  %s -> %s [label=%s];\n", self.Source, target, self.Label)
     return out
 }
 

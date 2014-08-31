@@ -44,6 +44,7 @@ const graphHTMLTemplate = `
 <div class="graphdoc-graph">
     <h1 class="graphdoc-graph-title">%s</h1>
     <div class="graphdoc-graph-desc">%s</div>
+    <div id="graphdoc-graph-viz"></div>
     <div class="graphdoc-graph-nodes">%s</div>
 </div>
 `

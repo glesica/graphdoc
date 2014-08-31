@@ -2,6 +2,7 @@ package graphdoc
 
 import (
     "fmt"
+    "strings"
     "github.com/glesica/graphdoc/pgraph"
 )
 
@@ -73,17 +74,33 @@ body {
     margin: 1.0em 0;
     text-align: center;
 }
+#graphdoc-graph-viz {
+    width: 100%%;
+    height: 400px;
+}
 </style>
+<link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+<script src="http://visjs.org/dist/vis.js"></script>
 </head>
 <body>
 %s
 <div class="graphdoc-footer">
     <small>Generated using GraphDoc. A George Lesica joint.</small>
 </div>
+<script type="text/javascript">
+var container = document.getElementById('graphdoc-graph-viz');
+var data = {
+    dot: '%s'
+};
+var options = {};
+var graph = new vis.Network(container, data, options);
+</script>
 </body>
 </html>
 `
 
 func HTMLDocument(graph pgraph.Graph) string {
-    return fmt.Sprintf(htmlTemplate, graph.ToHTML())
+    dotStrs := strings.Split(graph.ToDOT(), "\n")
+    dotStr := strings.Join(dotStrs, "")
+    return fmt.Sprintf(htmlTemplate, graph.ToHTML(), dotStr)
 }
