@@ -5,10 +5,10 @@ import (
 )
 
 type Node struct {
-    Label string
-    Desc string
-    Props map[string]*Prop
-    Rels []*Rel
+    Label string `json:"id"`
+    Desc string `json:"description"`
+    Props map[string]*Prop `json:"properties"`
+    Rels []*Rel `json:"edges"`
 }
 
 func NewNode() *Node {
@@ -68,4 +68,12 @@ func (self Node) ToHTML() string {
         relsHTML += rel.ToHTML()
     }
     return fmt.Sprintf(nodeHTMLTemplate, self.Label, self.Desc, propsHTML, relsHTML)
+}
+
+func (self Node) ToJS() string {
+    relsJS := ""
+    for _, rel := range self.Rels {
+        relsJS += rel.ToJS()
+    }
+    return relsJS
 }

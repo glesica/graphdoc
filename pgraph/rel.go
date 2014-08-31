@@ -5,10 +5,10 @@ import (
 )
 
 type Rel struct {
-    Label string
-    Desc string
-    Source string
-    Target string
+    Label string `json:"id"`
+    Desc string `json:"description"`
+    Source string `json:"source"`
+    Target string `json:"target"`
 }
 
 func NewRel() *Rel {
@@ -47,4 +47,12 @@ const relHTMLTemplate = `
 
 func (self Rel) ToHTML() string {
     return fmt.Sprintf(relHTMLTemplate, self.Label, self.Source, self.Target, self.Desc)
+}
+
+const relJSTemplate = `
+g.addEdge("%s", "%s");
+`
+
+func (self Rel) ToJS() string {
+    return fmt.Sprintf(relJSTemplate, self.Source, self.Target)
 }

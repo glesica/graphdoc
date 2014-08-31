@@ -2,26 +2,22 @@ package pgraph
 
 import (
     "fmt"
+    "strings"
 )
 
 type Graph struct {
-    Title string
-    Desc string
-    Nodes map[string]*Node
-}
-
-func NewGraph() Graph {
-    g := Graph{}
-    g.Nodes = make(map[string]*Node)
-    return g
+    Title string `json:"title"`
+    Desc string `json:"description"`
+    Nodes []*Node `json:"nodes"`
 }
 
 func (self *Graph) AppendDesc(desc string) {
     self.Desc += fmt.Sprint("\n", desc)
+    self.Desc = strings.TrimSpace(self.Desc)
 }
 
 func (self *Graph) InsertNode(node *Node) {
-    self.Nodes[node.Label] = node
+    self.Nodes = append(self.Nodes, node)
 }
 
 func (self Graph) ToDOT() string {
@@ -58,4 +54,17 @@ func (self Graph) ToHTML() string {
         nodesHTML += node.ToHTML()
     }
     return fmt.Sprintf(graphHTMLTemplate, self.Title, self.Desc, nodesHTML)
+}
+
+const graphJSTemplate = `
+var g = new Graph();
+%s
+`
+
+func (self Graph) ToJS() string {
+    nodesJS := ""
+    for _, node := range self.Nodes {
+        nodesJS += node.ToJS()
+    }
+    return fmt.Sprintf(graphJSTemplate, nodesJS)
 }

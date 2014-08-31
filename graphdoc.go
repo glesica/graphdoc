@@ -51,7 +51,7 @@ func main() {
         REL
     )
 
-    graph := pgraph.NewGraph()
+    graph := pgraph.Graph{}
     var currentNode *pgraph.Node
     var currentRel *pgraph.Rel
     var currentProp *pgraph.Prop

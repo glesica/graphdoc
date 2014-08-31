@@ -5,9 +5,9 @@ import (
 )
 
 type Prop struct {
-    Name string
-    Desc string
-    DataType string
+    Name string `json:"name"`
+    Desc string `json:"description"`
+    DataType string `json:"type"`
 }
 
 func NewProp() *Prop {
