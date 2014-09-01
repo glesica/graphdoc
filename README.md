@@ -47,3 +47,6 @@ built into HTML files by doing:
 ```
 $ make examples
 ```
+
+You can also look at `example.png` to see what the compiled docs look like (as
+of the last screen shot).
