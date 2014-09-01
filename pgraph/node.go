@@ -2,6 +2,7 @@ package pgraph
 
 import (
     "fmt"
+    "github.com/glesica/graphdoc/parsers"
 )
 
 type Node struct {
@@ -58,16 +59,16 @@ const nodeHTMLTemplate = `
 </div>
 `
 
-func (self Node) ToHTML() string {
+func (self Node) ToHTML(parser parsers.Parser) string {
     propsHTML := ""
     for _, prop := range self.Props {
-        propsHTML += prop.ToHTML()
+        propsHTML += prop.ToHTML(parser)
     }
     relsHTML := ""
     for _, rel := range self.Rels {
-        relsHTML += rel.ToHTML()
+        relsHTML += rel.ToHTML(parser)
     }
-    return fmt.Sprintf(nodeHTMLTemplate, self.Label, self.Desc, propsHTML, relsHTML)
+    return fmt.Sprintf(nodeHTMLTemplate, self.Label, parser(self.Desc), propsHTML, relsHTML)
 }
 
 func (self Node) ToJS() string {

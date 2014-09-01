@@ -9,8 +9,9 @@ import (
     "os"
     //"io/ioutil"
     "regexp"
+    "github.com/glesica/graphdoc/formatters"
     "github.com/glesica/graphdoc/pgraph"
-    "github.com/glesica/graphdoc/graphdoc"
+    "github.com/glesica/graphdoc/parsers"
 )
 
 var graphExp = regexp.MustCompile(":: ?Graph ([A-Za-z0-9]+) ?::")
@@ -21,6 +22,7 @@ var propExp = regexp.MustCompile(":: ?Prop ([A-Za-z0-9]+) ?: ?(num|str|any) ?::"
 func main() {
     //var outFormat = flag.String("outformat", "html", "Output format")
     outPath := flag.String("outpath", "", "Output path, stdout will be used if omitted.")
+    inFormat := flag.String("informat", "", "Input file format, default is to auto-detect.")
     flag.Parse()
     inPath := flag.Arg(0)
 
@@ -114,5 +116,17 @@ func main() {
         log.Fatal("Error reading file:", scanner.Err())
     }
 
-    outputFile.WriteString(graphdoc.HTMLDocument(graph))
+    var parser func(string) string
+    switch *inFormat {
+    case "txt":
+        parser = parsers.Text
+    case "md":
+        parser = parsers.Markdown
+    case "":
+        parser = parsers.Text // For now we default to text, later we will auto-detect
+    }
+
+    docString := formatters.HTMLDocument(graph, parser)
+
+    outputFile.WriteString(docString)
 }

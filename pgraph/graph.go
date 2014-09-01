@@ -2,7 +2,7 @@ package pgraph
 
 import (
     "fmt"
-    "strings"
+    "github.com/glesica/graphdoc/parsers"
 )
 
 type Graph struct {
@@ -12,8 +12,7 @@ type Graph struct {
 }
 
 func (self *Graph) AppendDesc(desc string) {
-    self.Desc += fmt.Sprint("\n", desc)
-    self.Desc = strings.TrimSpace(self.Desc)
+    self.Desc += desc
 }
 
 func (self *Graph) InsertNode(node *Node) {
@@ -49,12 +48,12 @@ const graphHTMLTemplate = `
 </div>
 `
 
-func (self Graph) ToHTML() string {
+func (self Graph) ToHTML(parser parsers.Parser) string {
     nodesHTML := ""
     for _, node := range self.Nodes {
-        nodesHTML += node.ToHTML()
+        nodesHTML += node.ToHTML(parser)
     }
-    return fmt.Sprintf(graphHTMLTemplate, self.Title, self.Desc, nodesHTML)
+    return fmt.Sprintf(graphHTMLTemplate, self.Title, parser(self.Desc), nodesHTML)
 }
 
 const graphJSTemplate = `

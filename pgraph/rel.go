@@ -2,6 +2,7 @@ package pgraph
 
 import (
     "fmt"
+    "github.com/glesica/graphdoc/parsers"
 )
 
 type Rel struct {
@@ -25,7 +26,12 @@ func (r Rel) ToString() string {
 }
 
 func (self Rel) ToDOT() string {
-    target := fmt.Sprintf("%s%s", self.Target, self.Label)
+    var target string
+    if self.Source == self.Target {
+        target = fmt.Sprintf("%s%s", self.Target, self.Label)
+    } else {
+        target = self.Target
+    }
     out := fmt.Sprintf("  %s -> %s [label=%s];\n", self.Source, target, self.Label)
     return out
 }
@@ -46,8 +52,8 @@ const relHTMLTemplate = `
 </div>
 `
 
-func (self Rel) ToHTML() string {
-    return fmt.Sprintf(relHTMLTemplate, self.Label, self.Source, self.Target, self.Desc)
+func (self Rel) ToHTML(parser parsers.Parser) string {
+    return fmt.Sprintf(relHTMLTemplate, self.Label, self.Source, self.Target, parser(self.Desc))
 }
 
 const relJSTemplate = `

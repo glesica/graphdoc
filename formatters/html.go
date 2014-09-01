@@ -1,12 +1,20 @@
-package graphdoc
+package formatters
 
 import (
-    "fmt"
+    "bytes"
+    //"fmt"
     "strings"
+    "text/template"
     "github.com/glesica/graphdoc/pgraph"
+    "github.com/glesica/graphdoc/parsers"
 )
 
-const htmlTemplate = `
+type HTMLDoc struct {
+    HTML string
+    DOT string
+}
+
+const htmlTemplateString = `
 <!doctype html>
 <html>
 <head>
@@ -83,14 +91,14 @@ body {
 <script src="http://visjs.org/dist/vis.js"></script>
 </head>
 <body>
-%s
+{{ .HTML }}
 <div class="graphdoc-footer">
     <small>Generated using GraphDoc. A George Lesica joint.</small>
 </div>
 <script type="text/javascript">
 var container = document.getElementById('graphdoc-graph-viz');
 var data = {
-    dot: '%s'
+    dot: '{{ .DOT }}'
 };
 var options = {};
 var graph = new vis.Network(container, data, options);
@@ -98,9 +106,12 @@ var graph = new vis.Network(container, data, options);
 </body>
 </html>
 `
+var htmlTemplate = template.Must(template.New("html").Parse(htmlTemplateString))
 
-func HTMLDocument(graph pgraph.Graph) string {
-    dotStrs := strings.Split(graph.ToDOT(), "\n")
-    dotStr := strings.Join(dotStrs, "")
-    return fmt.Sprintf(htmlTemplate, graph.ToHTML(), dotStr)
+func HTMLDocument(graph pgraph.Graph, parser parsers.Parser) string {
+    dotStr := strings.Join(strings.Split(graph.ToDOT(), "\n"), "")
+    htmlStr := graph.ToHTML(parser)
+    var out bytes.Buffer
+    htmlTemplate.Execute(&out, HTMLDoc{htmlStr, dotStr})
+    return out.String()
 }

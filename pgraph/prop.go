@@ -2,6 +2,7 @@ package pgraph
 
 import (
     "fmt"
+    "github.com/glesica/graphdoc/parsers"
 )
 
 type Prop struct {
@@ -39,6 +40,6 @@ const propHTMLTemplate = `
 </div>
 `
 
-func (self Prop) ToHTML() string {
-    return fmt.Sprintf(propHTMLTemplate, self.Name, self.DataType, self.Desc)
+func (self Prop) ToHTML(parser parsers.Parser) string {
+    return fmt.Sprintf(propHTMLTemplate, self.Name, self.DataType, parser(self.Desc))
 }
