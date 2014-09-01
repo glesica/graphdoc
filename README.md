@@ -38,3 +38,12 @@ Then take a look at `family.html`.
 ## Documentation
 
 [![GoDoc](https://godoc.org/github.com/glesica/graphdoc?status.svg)](https://godoc.org/github.com/glesica/graphdoc)
+
+## Examples
+
+There are a couple simple examples in the `examples` directory. They can be
+built into HTML files by doing:
+
+```
+$ make examples
+```
