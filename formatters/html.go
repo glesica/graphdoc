@@ -1,3 +1,5 @@
+// The formatters package provides tools to format documentation based on a
+// property graph data model.
 package formatters
 
 import (

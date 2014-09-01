@@ -1,3 +1,5 @@
+// The pgraph package provides tools for building a simulated property graph
+// model that can be used to build documentation.
 package pgraph
 
 import (
