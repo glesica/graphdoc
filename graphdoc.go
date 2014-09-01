@@ -16,8 +16,8 @@ import (
 
 var graphExp = regexp.MustCompile(":: ?Graph ([A-Za-z0-9]+) ?::")
 var nodeExp = regexp.MustCompile(":: ?Node ([A-Z][a-z0-9]*) ?::")
-var relExp = regexp.MustCompile(":: ?Rel ([A-Z_]+) ?-> ?([A-Z][a-z0-9]*) ?::")
-var propExp = regexp.MustCompile(":: ?Prop ([A-Za-z0-9]+) ?: ?(num|str|any) ?::")
+var relExp = regexp.MustCompile(":: ?Rel ([_A-Z]+) ?-> ?([A-Z][a-z0-9]*) ?::")
+var propExp = regexp.MustCompile(":: ?Prop ([_A-Za-z0-9]+) ?: ?(num|str|any|bool) ?::")
 
 func main() {
     //var outFormat = flag.String("outformat", "html", "Output format")
