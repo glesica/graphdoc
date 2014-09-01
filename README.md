@@ -34,3 +34,7 @@ $ graphdoc --outpath=family.html examples/family.md
 ```
 
 Then take a look at `family.html`.
+
+## Documentation
+
+[![GoDoc](https://godoc.org/github.com/glesica/graphdoc?status.svg)](https://godoc.org/github.com/glesica/graphdoc)
