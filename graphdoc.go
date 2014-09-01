@@ -116,7 +116,7 @@ func main() {
         log.Fatal("Error reading file:", scanner.Err())
     }
 
-    var parser func(string) string
+    var parser parsers.Parser
     switch *inFormat {
     case "txt":
         parser = parsers.Text
