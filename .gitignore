@@ -1,5 +1,5 @@
 *.swp
 *~
 vendor/
-example/*.html
+examples/*.html
 graphdoc
