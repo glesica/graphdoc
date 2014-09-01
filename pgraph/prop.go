@@ -5,6 +5,7 @@ import (
     "github.com/glesica/graphdoc/parsers"
 )
 
+// Prop represents a node property within a graph data model.
 type Prop struct {
     Name string `json:"name"`
     Desc string `json:"description"`
@@ -16,6 +17,7 @@ func NewProp() *Prop {
     return p
 }
 
+// AppendDesc appends the given string to the property description.
 func (self *Prop) AppendDesc(desc string) {
     self.Desc += fmt.Sprint("\n", desc)
 }
@@ -24,6 +26,7 @@ func (p Prop) ToString() string {
     return fmt.Sprint(p.Name, " (", p.DataType, ")")
 }
 
+// ToMarkdown returns the property formatted as Markdown.
 func (self Prop) ToMarkdown() string {
     out := fmt.Sprintf("#### %s (%s)\n", self.Name, self.DataType)
     out += fmt.Sprintln(self.Desc)
@@ -40,6 +43,8 @@ const propHTMLTemplate = `
 </div>
 `
 
+// ToHTML returns the property in HTML format with its description parsed using
+// the provided parser.
 func (self Prop) ToHTML(parser parsers.Parser) string {
     return fmt.Sprintf(propHTMLTemplate, self.Name, self.DataType, parser(self.Desc))
 }

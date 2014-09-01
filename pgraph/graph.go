@@ -5,20 +5,24 @@ import (
     "github.com/glesica/graphdoc/parsers"
 )
 
+// Graph is a representation of a graph data model.
 type Graph struct {
     Title string `json:"title"`
     Desc string `json:"description"`
     Nodes []*Node `json:"nodes"`
 }
 
+// AppendDesc appends a string to the description of the graph data model.
 func (self *Graph) AppendDesc(desc string) {
     self.Desc += desc
 }
 
+// InsertNode inserts a new node type into the graph data model.
 func (self *Graph) InsertNode(node *Node) {
     self.Nodes = append(self.Nodes, node)
 }
 
+// ToDOT returns a representation of the graph data model in DOT format.
 func (self Graph) ToDOT() string {
     out := fmt.Sprintf("digraph %s {\n", self.Title)
     for _, node := range self.Nodes {
@@ -30,6 +34,8 @@ func (self Graph) ToDOT() string {
     return out
 }
 
+// ToMarkdown returns a representation of the graph data model in Markdown
+// format.
 func (self Graph) ToMarkdown() string {
     out := fmt.Sprintln("# ", self.Title)
     out += fmt.Sprintln(self.Desc)
@@ -48,6 +54,8 @@ const graphHTMLTemplate = `
 </div>
 `
 
+// ToHTML returns an HTML version of the graph data model with descriptions
+// parsed using the provided parser.
 func (self Graph) ToHTML(parser parsers.Parser) string {
     nodesHTML := ""
     for _, node := range self.Nodes {

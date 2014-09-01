@@ -9,6 +9,8 @@ import (
     "github.com/glesica/graphdoc/parsers"
 )
 
+// HTMLDoc provides the fields necessary for creating an HTML document based on
+// a graph data model.
 type HTMLDoc struct {
     HTML string
     DOT string
@@ -108,6 +110,8 @@ var graph = new vis.Network(container, data, options);
 `
 var htmlTemplate = template.Must(template.New("html").Parse(htmlTemplateString))
 
+// HTMLDocument creates and returns an HTML document based on the provided
+// graph data model and parser as a string.
 func HTMLDocument(graph pgraph.Graph, parser parsers.Parser) string {
     dotStr := strings.Join(strings.Split(graph.ToDOT(), "\n"), "")
     htmlStr := graph.ToHTML(parser)
