@@ -62,7 +62,7 @@ The email address of the user, never displayed publicly but used internally.
 A media file available to be included in a post. Each file is owned by a
 particular user and is only made available to that user when creating a post.
 
-### ::Prop path:str::
+### ::Prop path::
 Path to the media file on the filesystem or a URL.
 
 ### ::Rel OWNED_BY -> User::

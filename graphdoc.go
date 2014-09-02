@@ -8,16 +8,11 @@ import (
     "log"
     "os"
     //"io/ioutil"
-    "regexp"
     "github.com/glesica/graphdoc/formatters"
     "github.com/glesica/graphdoc/pgraph"
     "github.com/glesica/graphdoc/parsers"
+    "github.com/glesica/graphdoc/schema"
 )
-
-var graphExp = regexp.MustCompile(":: ?Graph ([A-Za-z0-9]+) ?::")
-var nodeExp = regexp.MustCompile(":: ?Node ([A-Z][a-z0-9]*) ?::")
-var relExp = regexp.MustCompile(":: ?Rel ([_A-Z]+) ?-> ?([A-Z][a-z0-9]*) ?::")
-var propExp = regexp.MustCompile(":: ?Prop ([_A-Za-z0-9]+) ?: ?(num|str|any|bool) ?::")
 
 func main() {
     //var outFormat = flag.String("outformat", "html", "Output format")
@@ -45,70 +40,53 @@ func main() {
 
     scanner := bufio.NewScanner(inputFile)
 
-    type Depth int
-    const (
-        GRAPH Depth = iota
-        NODE
-        PROP
-        REL
-    )
 
     graph := pgraph.Graph{}
     var currentNode *pgraph.Node
     var currentRel *pgraph.Rel
     var currentProp *pgraph.Prop
-    var matches []string
-    depth := GRAPH
+
+    var depth schema.ModelLayer
+    var layer schema.ModelLayer
+    var element schema.ModelElement
+
     for scanner.Scan() {
         line := scanner.Text()
+        layer, element = schema.ParseLine(line)
 
-        matches = graphExp.FindStringSubmatch(line)
-        if matches != nil {
-            // TODO Support more than one graph
-            graph.Title = matches[1]
-            depth = GRAPH
-            continue
-        }
-
-        matches = nodeExp.FindStringSubmatch(line)
-        if matches != nil {
+        switch layer {
+        case schema.GRAPH:
+            graph.Title = element["title"]
+        case schema.NODE:
             currentNode = pgraph.NewNode()
-            currentNode.Label = matches[1]
+            currentNode.Label = element["label"]
             graph.InsertNode(currentNode)
-            depth = NODE
-            continue
-        }
-
-        matches = relExp.FindStringSubmatch(line)
-        if matches != nil {
+        case schema.REL:
             currentRel = pgraph.NewRel()
-            currentRel.Label = matches[1]
-            currentRel.Target = matches[2]
+            currentRel.Label = element["label"]
+            currentRel.Target = element["target"]
             currentRel.Source = currentNode.Label
             currentNode.InsertRel(currentRel)
-            depth = REL
-            continue
-        }
-
-        matches = propExp.FindStringSubmatch(line)
-        if matches != nil {
+        case schema.PROP:
             currentProp = pgraph.NewProp()
-            currentProp.Name = matches[1]
-            currentProp.DataType = matches[2]
+            currentProp.Name = element["name"]
+            currentProp.DataType = element["type"]
             currentNode.InsertProp(currentProp)
-            depth = PROP
-            continue
+        case schema.NONE:
+            switch depth {
+            case schema.GRAPH:
+                graph.AppendDesc(line)
+            case schema.NODE:
+                currentNode.AppendDesc(line)
+            case schema.REL:
+                currentRel.AppendDesc(line)
+            case schema.PROP:
+                currentProp.AppendDesc(line)
+            }
         }
 
-        switch depth {
-        case GRAPH:
-            graph.AppendDesc(line)
-        case NODE:
-            currentNode.AppendDesc(line)
-        case REL:
-            currentRel.AppendDesc(line)
-        case PROP:
-            currentProp.AppendDesc(line)
+        if layer != schema.NONE {
+            depth = layer
         }
     }
 
