@@ -8,3 +8,6 @@ graphdoc :
 
 %.html : %.md
 	./graphdoc --outpath=$@ --informat=md $<
+
+clean :
+	rm examples/*.html
