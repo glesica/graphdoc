@@ -4,7 +4,7 @@ import (
     "bufio"
     //"encoding/json"
     "flag"
-    //"fmt"
+    "fmt"
     "log"
     "os"
     //"io/ioutil"
@@ -40,12 +40,12 @@ func main() {
 
     scanner := bufio.NewScanner(inputFile)
 
-
-    graph := pgraph.Graph{}
+    graph := pgraph.NewGraph()
     var currentNode *pgraph.Node
     var currentRel *pgraph.Rel
     var currentProp *pgraph.Prop
 
+    var updepth schema.ModelLayer
     var depth schema.ModelLayer
     var layer schema.ModelLayer
     var element schema.ModelElement
@@ -64,14 +64,48 @@ func main() {
         case schema.REL:
             currentRel = pgraph.NewRel()
             currentRel.Label = element["label"]
-            currentRel.Target = element["target"]
-            currentRel.Source = currentNode.Label
-            currentNode.InsertRel(currentRel)
+            graph.InsertRel(currentRel)
+        case schema.REL_FROM:
+            if depth != schema.REL {
+                panic(fmt.Sprintf("Relationship From in invalid context: `%s`", line))
+            }
+            currentRel.Source = element["label"]
+        case schema.REL_TO:
+            if depth != schema.REL {
+                panic(fmt.Sprintf("Relationship To in invalid context: `%s`", line))
+            }
+            currentRel.Target = element["label"]
         case schema.PROP:
             currentProp = pgraph.NewProp()
             currentProp.Name = element["name"]
-            currentProp.DataType = element["type"]
-            currentNode.InsertProp(currentProp)
+            switch updepth {
+            case schema.NODE:
+                currentNode.InsertProp(currentProp)
+            case schema.REL:
+                currentRel.InsertProp(currentProp)
+            default:
+                panic(fmt.Sprintf("Property in invalid context: `%`", line))
+            }
+        case schema.PROP_TYPE:
+            if depth != schema.PROP {
+                panic(fmt.Sprintf("Property Type in invalid context: `%s`", line))
+            }
+            currentProp.Type = element["type"]
+        case schema.PROP_IND:
+            if depth != schema.PROP {
+                panic(fmt.Sprintf("Property Index in invalid context: `%s`", line))
+            }
+            currentProp.Ind = true
+        case schema.PROP_REQ:
+            if depth != schema.PROP {
+                panic(fmt.Sprintf("Property Required in invalid context: `%s`", line))
+            }
+            currentProp.Req = true
+        case schema.PROP_UNIQ:
+            if depth != schema.PROP {
+                panic(fmt.Sprintf("Property Unique in invalid context: `%s`", line))
+            }
+            currentProp.Uniq = true
         case schema.NONE:
             switch depth {
             case schema.GRAPH:
@@ -85,8 +119,12 @@ func main() {
             }
         }
 
-        if layer != schema.NONE {
+        if layer == schema.GRAPH || layer == schema.NODE || layer == schema.REL || layer == schema.PROP {
             depth = layer
+        }
+
+        if layer == schema.GRAPH || layer == schema.NODE || layer == schema.REL {
+            updepth = layer
         }
     }
 

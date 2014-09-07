@@ -4,77 +4,44 @@ package pgraph
 
 import (
     "fmt"
-    "github.com/glesica/graphdoc/parsers"
 )
 
 // Graph is a representation of a graph data model.
 type Graph struct {
     Title string `json:"title"`
-    Desc string `json:"description"`
-    Nodes []*Node `json:"nodes"`
+    Desc string `json:"desc"`
+    Nodes map[string]*Node `json:"nodes"`
+    Rels map[string]*Rel `json:"rels"`
 }
 
-// AppendDesc appends a string to the description of the graph data model.
-func (self *Graph) AppendDesc(desc string) {
-    self.Desc += desc
+func NewGraph() *Graph {
+    g := new(Graph)
+    g.Nodes = make(map[string]*Node)
+    g.Rels = make(map[string]*Rel)
+    return g
+}
+
+// AppendDesc appends a string to the description of the graph data model. No
+// other formatting is done to the string and no newlines are added or removed.
+func (g *Graph) AppendDesc(desc string) {
+    g.Desc += desc
 }
 
 // InsertNode inserts a new node type into the graph data model.
-func (self *Graph) InsertNode(node *Node) {
-    self.Nodes = append(self.Nodes, node)
+func (g *Graph) InsertNode(node *Node) {
+    g.Nodes[node.Label] = node
 }
 
-// ToDOT returns a representation of the graph data model in DOT format.
-func (self Graph) ToDOT() string {
-    out := fmt.Sprintf("digraph %s {\n", self.Title)
-    for _, node := range self.Nodes {
-        for _, rel := range node.Rels {
-            out += rel.ToDOT()
-        }
+func (g *Graph) InsertRel(rel *Rel) {
+    g.Rels[rel.Label] = rel
+}
+
+// DOT returns a representation of the graph data model in DOT format.
+func (g Graph) DOT() string {
+    out := fmt.Sprintf("digraph %s { ", g.Title)
+    for _, rel := range g.Rels {
+        out += fmt.Sprintf(" %s -> %s [label=%s];", rel.Source, rel.Target, rel.Label)
     }
-    out += fmt.Sprint("}")
+    out += fmt.Sprint(" }")
     return out
-}
-
-// ToMarkdown returns a representation of the graph data model in Markdown
-// format.
-func (self Graph) ToMarkdown() string {
-    out := fmt.Sprintln("# ", self.Title)
-    out += fmt.Sprintln(self.Desc)
-    for _, node := range self.Nodes {
-        out += node.ToMarkdown()
-    }
-    return out
-}
-
-const graphHTMLTemplate = `
-<div class="graphdoc-graph">
-    <h1 class="graphdoc-graph-title">%s</h1>
-    <div class="graphdoc-graph-desc">%s</div>
-    <div id="graphdoc-graph-viz"></div>
-    <div class="graphdoc-graph-nodes">%s</div>
-</div>
-`
-
-// ToHTML returns an HTML version of the graph data model with descriptions
-// parsed using the provided parser.
-func (self Graph) ToHTML(parser parsers.Parser) string {
-    nodesHTML := ""
-    for _, node := range self.Nodes {
-        nodesHTML += node.ToHTML(parser)
-    }
-    return fmt.Sprintf(graphHTMLTemplate, self.Title, parser(self.Desc), nodesHTML)
-}
-
-const graphJSTemplate = `
-var g = new Graph();
-%s
-`
-
-func (self Graph) ToJS() string {
-    nodesJS := ""
-    for _, node := range self.Nodes {
-        nodesJS += node.ToJS()
-    }
-    return fmt.Sprintf(graphJSTemplate, nodesJS)
 }

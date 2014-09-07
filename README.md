@@ -15,13 +15,19 @@ graphs, nodes, relationships, and properties (relationships can't have
 properties yet). Here are some examples of the tags:
 
 ```
-::Graph GraphTitle::
+@Graph <name>
 
-::Node NodeName::
+@Node <label>
 
-::Rel RELATED_TO -> NodeName::
+@Rel <label>
+@From <node_label>
+@To <node_label>
 
-::Prop propertyName:str::
+@Prop <name>
+@Type {str|num|bool|any}
+@Index
+@Required
+@Unique
 ```
 
 Once you have created a document, you can use the command line tool to compile
