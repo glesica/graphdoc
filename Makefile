@@ -1,9 +1,10 @@
 MARKDOWN=$(wildcard examples/*.md)
 HTML=$(MARKDOWN:.md=.html)
+GOFILES=$(wildcard */*.go)
 
 examples : graphdoc $(HTML)
 
-graphdoc :
+graphdoc : graphdoc.go $(GOFILES)
 	go build
 
 %.html : %.md
